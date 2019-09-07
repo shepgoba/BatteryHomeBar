@@ -1,9 +1,9 @@
 Package: com.shepgoba.batteryhomebar
 Name: BatteryHomeBar
-Depends: mobilesubstrate
-Version: 0.0.1
+Depends: mobilesubstrate, org.thebigboss.libcolorpicker (>= 1.6.3), firmware (>= 11.0)
+Version: 1.0
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: Show the battery level on the Home Bar (iPhone X/XS/XR)
 Maintainer: shepgoba
 Author: shepgoba
 Section: Tweaks
