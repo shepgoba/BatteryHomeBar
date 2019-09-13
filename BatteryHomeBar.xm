@@ -1,7 +1,7 @@
 #import "BatteryHomeBar.h"
 #import <libcolorpicker.h>
 
-static int offsets = 2;
+static const int offsets = 2;
 
 static BOOL enabled;
 static BOOL enableOutline;
@@ -48,26 +48,31 @@ static void loadPrefs()
 
 - (id) initWithFrame:(CGRect)arg1
 {
-	MTLumaDodgePillView *orig = %orig;
-	orig.backgroundColor = homeBarBackgroundColor;
-
-	orig.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-	if (enableOutline || shrinkMiddleEnabled)
+	self = %orig;
+	if (self) 
 	{
-		orig.batteryPctView.layer.cornerRadius = 2;
-	}
 
-	[orig addSubview: orig.batteryPctView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
-	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: NSProcessInfoPowerStateDidChangeNotification object:nil];
-	return orig;
+		self.backgroundColor = homeBarBackgroundColor;
+
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		if (shrinkMiddleEnabled)
+		{
+			self.batteryPctView.layer.cornerRadius = 3;
+		}
+		if (enableOutline)
+		{
+			self.batteryPctView.layer.cornerRadius = 2;
+		}
+
+		[self addSubview: self.batteryPctView];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
+	}
+	return self;
 }
 
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
-	//[[NSNotificationCenter defaultCenter] removeObserver:self name:NSProcessInfoPowerStateDidChangeNotification  object:nil];
-
 	%orig;
 }
 
@@ -89,7 +94,7 @@ static void loadPrefs()
 	}
 	else if (shrinkMiddleEnabled)
 	{
-		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), offsets - 1, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height - (offsets));
+		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), 0, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height);
 	}
 	else if (enableOutline)
 	{
@@ -100,12 +105,6 @@ static void loadPrefs()
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
 
-	/*if ([[NSProcessInfo processInfo] isLowPowerModeEnabled]) 
-	{
-		self.batteryPctView.backgroundColor = [UIColor yellowColor];
-	}
-	else
-	{*/
 	if (batteryLevel <= 20)
 	{
 		self.batteryPctView.backgroundColor = [UIColor redColor];
@@ -120,6 +119,7 @@ static void loadPrefs()
 	}
 	
 }
+
 %end
 
 
@@ -135,25 +135,28 @@ static void loadPrefs()
 - (id) initWithFrame:(CGRect)arg1
 {
 	
-	MTStaticColorPillView *orig = %orig;
-	orig.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-	if (enableOutline || shrinkMiddleEnabled)
+	self = %orig;
+	if (self) 
 	{
-		orig.batteryPctView.layer.cornerRadius = 2;
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		if (shrinkMiddleEnabled)
+		{
+			self.batteryPctView.layer.cornerRadius = 3;
+		}
+		if (enableOutline)
+		{
+			self.batteryPctView.layer.cornerRadius = 2;
+		}
+
+		[self addSubview: self.batteryPctView];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
 	}
-
-	[orig addSubview: orig.batteryPctView];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
-	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: NSProcessInfoPowerStateDidChangeNotification object:nil];
-
-	return orig;
+	return self;
 }
 
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
-	//[[NSNotificationCenter defaultCenter] removeObserver:self name:NSProcessInfoPowerStateDidChangeNotification  object:nil];
 	%orig;
 
 }
@@ -176,7 +179,7 @@ static void loadPrefs()
 	}
 	else if (shrinkMiddleEnabled)
 	{
-		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), offsets - 1, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height - (offsets));
+		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), 0, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height);
 	}
 	else if (enableOutline)
 	{
@@ -187,12 +190,6 @@ static void loadPrefs()
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
 
-	/*if ([[NSProcessInfo processInfo] isLowPowerModeEnabled]) 
-	{
-		self.batteryPctView.backgroundColor = [UIColor yellowColor];
-	}
-	else
-	{*/
 	if (batteryLevel <= 20)
 	{
 		self.batteryPctView.backgroundColor = [UIColor redColor];
@@ -205,7 +202,9 @@ static void loadPrefs()
 	{
 		self.batteryPctView.backgroundColor = [UIColor greenColor];
 	}
+	
 }
+
 %end
 %end
 

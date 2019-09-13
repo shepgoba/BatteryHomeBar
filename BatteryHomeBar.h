@@ -8,7 +8,9 @@
 - (void) updateBatteryBarState:(NSNotification *)notification;
 @end
 
-//#define HOMEBAR_BACKGROUND_COLOR [UIColor colorWithRed:230.0f/255.0f green:230.0f/255.0f blue:230.f/255.0f alpha:1]
+/* 
+Possible rewrite eventually
+
 @interface SBDashBoardHomeAffordanceView : UIView
 -(MTLumaDodgePillView *)dynamicHomeAffordance;
 -(MTStaticColorPillView *)staticHomeAffordance;
@@ -17,3 +19,4 @@
 @interface SBDashBoardHomeAffordanceViewController : UIViewController
 -(SBDashBoardHomeAffordanceView *)homeAffordanceView;
 @end
+*/

@@ -2,7 +2,7 @@
 #import "BatteryHomeBar.h"
 #import <libcolorpicker.h>
 
-static int offsets = 2;
+static const int offsets = 2;
 
 static BOOL enabled;
 static BOOL enableOutline;
@@ -74,26 +74,31 @@ static void _logos_method$Tweak$MTLumaDodgePillView$setStyle$(_LOGOS_SELF_TYPE_N
 
 
 static MTLumaDodgePillView* _logos_method$Tweak$MTLumaDodgePillView$initWithFrame$(_LOGOS_SELF_TYPE_INIT MTLumaDodgePillView* __unused self, SEL __unused _cmd, CGRect arg1) _LOGOS_RETURN_RETAINED {
-	MTLumaDodgePillView *orig = _logos_orig$Tweak$MTLumaDodgePillView$initWithFrame$(self, _cmd, arg1);
-	orig.backgroundColor = homeBarBackgroundColor;
-
-	orig.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-	if (enableOutline || shrinkMiddleEnabled)
+	self = _logos_orig$Tweak$MTLumaDodgePillView$initWithFrame$(self, _cmd, arg1);
+	if (self) 
 	{
-		orig.batteryPctView.layer.cornerRadius = 2;
-	}
 
-	[orig addSubview: orig.batteryPctView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
-	
-	return orig;
+		self.backgroundColor = homeBarBackgroundColor;
+
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		if (shrinkMiddleEnabled)
+		{
+			self.batteryPctView.layer.cornerRadius = 3;
+		}
+		if (enableOutline)
+		{
+			self.batteryPctView.layer.cornerRadius = 2;
+		}
+
+		[self addSubview: self.batteryPctView];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
+	}
+	return self;
 }
 
 
 static void _logos_method$Tweak$MTLumaDodgePillView$dealloc(_LOGOS_SELF_TYPE_NORMAL MTLumaDodgePillView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
-	
-
 	_logos_orig$Tweak$MTLumaDodgePillView$dealloc(self, _cmd);
 }
 
@@ -115,7 +120,7 @@ static void _logos_method$Tweak$MTLumaDodgePillView$updateBatteryBarState$(_LOGO
 	}
 	else if (shrinkMiddleEnabled)
 	{
-		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), offsets - 1, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height - (offsets));
+		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), 0, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height);
 	}
 	else if (enableOutline)
 	{
@@ -125,12 +130,6 @@ static void _logos_method$Tweak$MTLumaDodgePillView$updateBatteryBarState$(_LOGO
 	{
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
-
-	
-
-
-
-
 
 	if (batteryLevel <= 20)
 	{
@@ -151,6 +150,7 @@ static void _logos_method$Tweak$MTLumaDodgePillView$updateBatteryBarState$(_LOGO
 
 
 
+
 __attribute__((used)) static UIView * _logos_method$Tweak$MTStaticColorPillView$batteryPctView(MTStaticColorPillView * __unused self, SEL __unused _cmd) { return (UIView *)objc_getAssociatedObject(self, (void *)_logos_method$Tweak$MTStaticColorPillView$batteryPctView); }; __attribute__((used)) static void _logos_method$Tweak$MTStaticColorPillView$setBatteryPctView(MTStaticColorPillView * __unused self, SEL __unused _cmd, UIView * rawValue) { objc_setAssociatedObject(self, (void *)_logos_method$Tweak$MTStaticColorPillView$batteryPctView, rawValue, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
 
 
@@ -161,25 +161,28 @@ static void _logos_method$Tweak$MTStaticColorPillView$setPillColor$(_LOGOS_SELF_
 
 static MTStaticColorPillView* _logos_method$Tweak$MTStaticColorPillView$initWithFrame$(_LOGOS_SELF_TYPE_INIT MTStaticColorPillView* __unused self, SEL __unused _cmd, CGRect arg1) _LOGOS_RETURN_RETAINED {
 	
-	MTStaticColorPillView *orig = _logos_orig$Tweak$MTStaticColorPillView$initWithFrame$(self, _cmd, arg1);
-	orig.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-	if (enableOutline || shrinkMiddleEnabled)
+	self = _logos_orig$Tweak$MTStaticColorPillView$initWithFrame$(self, _cmd, arg1);
+	if (self) 
 	{
-		orig.batteryPctView.layer.cornerRadius = 2;
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		if (shrinkMiddleEnabled)
+		{
+			self.batteryPctView.layer.cornerRadius = 3;
+		}
+		if (enableOutline)
+		{
+			self.batteryPctView.layer.cornerRadius = 2;
+		}
+
+		[self addSubview: self.batteryPctView];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
 	}
-
-	[orig addSubview: orig.batteryPctView];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
-	
-
-	return orig;
+	return self;
 }
 
 
 static void _logos_method$Tweak$MTStaticColorPillView$dealloc(_LOGOS_SELF_TYPE_NORMAL MTStaticColorPillView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
-	
 	_logos_orig$Tweak$MTStaticColorPillView$dealloc(self, _cmd);
 
 }
@@ -202,7 +205,7 @@ static void _logos_method$Tweak$MTStaticColorPillView$updateBatteryBarState$(_LO
 	}
 	else if (shrinkMiddleEnabled)
 	{
-		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), offsets - 1, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height - (offsets));
+		self.batteryPctView.frame = CGRectMake((1 - batteryLevel / 100) * (self.frame.size.width / 2), 0, (self.frame.size.width * (batteryLevel / 100)), self.frame.size.height);
 	}
 	else if (enableOutline)
 	{
@@ -212,12 +215,6 @@ static void _logos_method$Tweak$MTStaticColorPillView$updateBatteryBarState$(_LO
 	{
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
-
-	
-
-
-
-
 
 	if (batteryLevel <= 20)
 	{
@@ -231,11 +228,13 @@ static void _logos_method$Tweak$MTStaticColorPillView$updateBatteryBarState$(_LO
 	{
 		self.batteryPctView.backgroundColor = [UIColor greenColor];
 	}
+	
 }
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_eb163727(int __unused argc, char __unused **argv, char __unused **envp)
+
+static __attribute__((constructor)) void _logosLocalCtor_6f3ef77a(int __unused argc, char __unused **argv, char __unused **envp)
 {
 	loadPrefs();
 
