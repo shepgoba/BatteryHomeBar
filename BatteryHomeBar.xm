@@ -6,6 +6,7 @@ static const int offsets = 2;
 static BOOL enabled;
 static BOOL enableOutline;
 static BOOL shrinkMiddleEnabled;
+static BOOL transparentBackgroundEnabled;
 static UIColor *homeBarBackgroundColor;
 
 static void loadPrefs() 
@@ -31,6 +32,7 @@ static void loadPrefs()
   	enabled = [([settings objectForKey:@"enabled"] ? [settings objectForKey:@"enabled"] : @(YES)) boolValue];
 	enableOutline = [([settings objectForKey:@"enableOutline"] ? [settings objectForKey:@"enableOutline"] : @(YES)) boolValue];
 	shrinkMiddleEnabled = [([settings objectForKey:@"shrinkMiddleEnabled"] ? [settings objectForKey:@"shrinkMiddleEnabled"] : @(NO)) boolValue];
+	transparentBackgroundEnabled = [([settings objectForKey:@"transparentBackgroundEnabled"] ? [settings objectForKey:@"transparentBackgroundEnabled"] : @(NO)) boolValue];
 
 	homeBarBackgroundColor = LCPParseColorString([colors objectForKey:@"homeBarBackgroundColor"], @"#000000");
 
@@ -51,8 +53,14 @@ static void loadPrefs()
 	self = %orig;
 	if (self) 
 	{
-
-		self.backgroundColor = homeBarBackgroundColor;
+		if (transparentBackgroundEnabled)
+		{
+			self.backgroundColor = [UIColor clearColor];
+		}
+		else
+		{
+			self.backgroundColor = homeBarBackgroundColor;
+		}
 
 		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
 		if (shrinkMiddleEnabled)
@@ -129,7 +137,14 @@ static void loadPrefs()
 
 - (void) setPillColor:(UIColor *)a
 {
-	%orig(homeBarBackgroundColor);
+	if (transparentBackgroundEnabled)
+	{
+		%orig([UIColor clearColor]);
+	}
+	else
+	{
+		%orig(homeBarBackgroundColor);
+	}
 }
 
 - (id) initWithFrame:(CGRect)arg1

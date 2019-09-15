@@ -48,6 +48,18 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.shepgoba.bhbsettings</string>
+			<key>key</key>
+			<string>transparentBackgroundEnabled</string>
+			<key>label</key>
+			<string>Transparent Background</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>cellClass</key>
 			<string>PFSimpleLiteColorCell</string>
