@@ -7,6 +7,7 @@ static BOOL enabled;
 static BOOL enableOutline;
 static BOOL shrinkMiddleEnabled;
 static BOOL transparentBackgroundEnabled;
+static BOOL barGradientEnabled;
 static UIColor *homeBarBackgroundColor;
 
 static void loadPrefs() 
@@ -27,18 +28,25 @@ static void loadPrefs()
 		settings = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.shepgoba.bhbsettings.plist"];
 	}
 
-	colors = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.shepgoba.bhbsettings.color.plist"];
-
   	enabled = [([settings objectForKey:@"enabled"] ? [settings objectForKey:@"enabled"] : @(YES)) boolValue];
 	enableOutline = [([settings objectForKey:@"enableOutline"] ? [settings objectForKey:@"enableOutline"] : @(YES)) boolValue];
 	shrinkMiddleEnabled = [([settings objectForKey:@"shrinkMiddleEnabled"] ? [settings objectForKey:@"shrinkMiddleEnabled"] : @(NO)) boolValue];
 	transparentBackgroundEnabled = [([settings objectForKey:@"transparentBackgroundEnabled"] ? [settings objectForKey:@"transparentBackgroundEnabled"] : @(NO)) boolValue];
+	barGradientEnabled = [([settings objectForKey:@"barGradientEnabled"] ? [settings objectForKey:@"barGradientEnabled"] : @(NO)) boolValue];
 
+	colors = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.shepgoba.bhbsettings.color.plist"];
 	homeBarBackgroundColor = LCPParseColorString([colors objectForKey:@"homeBarBackgroundColor"], @"#000000");
 
 }
 
 %group Tweak
+%hook SBIdleTimerGlobalCoordinator
+-(void)_batterySaverModeDidChange
+{
+	%orig;
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"EnableLPMBackground" object:self];
+}
+%end
 
 %hook MTLumaDodgePillView
 
@@ -62,7 +70,9 @@ static void loadPrefs()
 			self.backgroundColor = homeBarBackgroundColor;
 		}
 
-		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+
+
 		if (shrinkMiddleEnabled)
 		{
 			self.batteryPctView.layer.cornerRadius = 3;
@@ -74,6 +84,7 @@ static void loadPrefs()
 
 		[self addSubview: self.batteryPctView];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: @"EnableLPMBackground" object:nil];
 	}
 	return self;
 }
@@ -81,6 +92,7 @@ static void loadPrefs()
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self 	name: @"EnableLPMBackground" object:nil];
 	%orig;
 }
 
@@ -112,19 +124,26 @@ static void loadPrefs()
 	{
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
-
-	if (batteryLevel <= 20)
-	{
-		self.batteryPctView.backgroundColor = [UIColor redColor];
-	}
-	else if (batteryLevel >= 21 && batteryLevel <= 35)
+	if ([[NSProcessInfo processInfo] isLowPowerModeEnabled])
 	{
 		self.batteryPctView.backgroundColor = [UIColor yellowColor];
 	}
-	else
+	else 
 	{
-		self.batteryPctView.backgroundColor = [UIColor greenColor];
+		if (batteryLevel <= 20)
+		{
+			self.batteryPctView.backgroundColor = [UIColor redColor];
+		}
+		else if (batteryLevel >= 21 && batteryLevel <= 35)
+		{
+			self.batteryPctView.backgroundColor = [UIColor orangeColor];
+		}
+		else
+		{
+			self.batteryPctView.backgroundColor = [UIColor greenColor];
+		}
 	}
+
 	
 }
 
@@ -153,7 +172,8 @@ static void loadPrefs()
 	self = %orig;
 	if (self) 
 	{
-		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+		self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+
 		if (shrinkMiddleEnabled)
 		{
 			self.batteryPctView.layer.cornerRadius = 3;
@@ -165,6 +185,7 @@ static void loadPrefs()
 
 		[self addSubview: self.batteryPctView];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: UIDeviceBatteryLevelDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBatteryBarState:) 	name: @"EnableLPMBackground" object:nil];
 	}
 	return self;
 }
@@ -172,6 +193,7 @@ static void loadPrefs()
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceBatteryLevelDidChangeNotification  object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self 	name: @"EnableLPMBackground" object:nil];
 	%orig;
 
 }
@@ -205,19 +227,26 @@ static void loadPrefs()
 		self.batteryPctView.frame = CGRectMake(0, 0, self.frame.size.width * (batteryLevel / 100), self.frame.size.height);
 	}
 
-	if (batteryLevel <= 20)
-	{
-		self.batteryPctView.backgroundColor = [UIColor redColor];
-	}
-	else if (batteryLevel >= 21 && batteryLevel <= 35)
+	if ([[NSProcessInfo processInfo] isLowPowerModeEnabled])
 	{
 		self.batteryPctView.backgroundColor = [UIColor yellowColor];
 	}
-	else
+	else 
 	{
-		self.batteryPctView.backgroundColor = [UIColor greenColor];
+		if (batteryLevel <= 20)
+		{
+			self.batteryPctView.backgroundColor = [UIColor redColor];
+		}
+		else if (batteryLevel >= 21 && batteryLevel <= 35)
+		{
+			self.batteryPctView.backgroundColor = [UIColor orangeColor];
+		}
+		else
+		{
+			self.batteryPctView.backgroundColor = [UIColor greenColor];
+		}
 	}
-	
+
 }
 
 %end
