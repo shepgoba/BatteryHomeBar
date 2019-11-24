@@ -1,22 +1,11 @@
-@interface MTLumaDodgePillView : UIView
+@interface MTPillView : UIView
 @property (nonatomic, retain) UIView *batteryPctView;
-- (void) updateBatteryBarState:(NSNotification *)notification;
+@property (nonatomic, retain) UIView *backgroundView;
+@property (nonatomic, retain) UILabel *percentLabel;
+- (void) updateBatteryBarState;
 @end
 
-@interface MTStaticColorPillView : UIView
-@property (nonatomic, retain) UIView *batteryPctView;
-- (void) updateBatteryBarState:(NSNotification *)notification;
+@interface MTLumaDodgePillView : MTPillView
 @end
-
-/* 
-Possible rewrite eventually
-
-@interface SBDashBoardHomeAffordanceView : UIView
--(MTLumaDodgePillView *)dynamicHomeAffordance;
--(MTStaticColorPillView *)staticHomeAffordance;
+@interface MTStaticColorPillView : MTPillView
 @end
-
-@interface SBDashBoardHomeAffordanceViewController : UIViewController
--(SBDashBoardHomeAffordanceView *)homeAffordanceView;
-@end
-*/

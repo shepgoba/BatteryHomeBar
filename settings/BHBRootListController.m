@@ -2,10 +2,9 @@
 #include <spawn.h>
 
 @implementation BHBRootListController
-- (void)viewWillAppear:(BOOL)animated 
-{
+
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-	self.title = @"BatteryHomeBar";
     UIBarButtonItem *applyButton = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self action:@selector(respringDevice)];
     self.navigationItem.rightBarButtonItem = applyButton;
 }
@@ -21,17 +20,17 @@
 {
 	UIAlertController *confirmRespringAlert = [UIAlertController alertControllerWithTitle:@"Apply settings?" message:@"This will respring your device" preferredStyle:UIAlertControllerStyleAlert];
 
-	UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) 
-    {
-       pid_t pid;
+	UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+       	pid_t pid;
 		const char *argv[] = {"sbreload", NULL};
 		posix_spawn(&pid, "/usr/bin/sbreload", NULL, NULL, (char* const*)argv, NULL);
     }];
 
 	UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
 
-    [confirmRespringAlert addAction:confirm];
     [confirmRespringAlert addAction:cancel];
+	[confirmRespringAlert addAction:confirm];
+
 	[self presentViewController:confirmRespringAlert animated:YES completion:nil];
 }
 - (void) openTwitter
