@@ -3,9 +3,7 @@
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UILabel *percentLabel;
 @property (nonatomic, strong) NSLayoutConstraint *batteryWidthConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *batteryPositionXConstraint;
 -(void)updateWidthConstraintForBatteryLevel;
--(void)updatePositionXConstraintForBatteryLevel;
 -(void)updateColorState;
 @end
 

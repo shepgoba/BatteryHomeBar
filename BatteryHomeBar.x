@@ -38,11 +38,11 @@ void commonDidMoveToWindow(MTPillView *self) {
 	if (shrinkMiddleEnabled)
 		[self.batteryPctView.centerXAnchor constraintEqualToAnchor:self.centerXAnchor constant:0].active = YES;
 	else 
-		[self.batteryPctView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:offsets].active = YES;
+		[self.batteryPctView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:offsets*2].active = YES;
 }
 
 void commonInit(MTPillView *self) {
-	self.batteryPctView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+	self.batteryPctView = [[UIView alloc] init];
 	self.batteryPctView.translatesAutoresizingMaskIntoConstraints = false;
 	if (shrinkMiddleEnabled) {
 		self.batteryPctView.layer.cornerRadius = 3;
@@ -61,41 +61,23 @@ void updateColorState(MTPillView *self) {
 	if ([[NSProcessInfo processInfo] isLowPowerModeEnabled]) {
 		self.batteryPctView.backgroundColor = [UIColor yellowColor];
 	} else {
-		if (batteryLevel * 100 <= 20)
+		if (batteryLevel <= 20)
 			self.batteryPctView.backgroundColor = [UIColor redColor];
-		else if (batteryLevel * 100 >= 21 && batteryLevel * 100 <= 35)
+		else if (batteryLevel >= 21 && batteryLevel <= 35)
 			self.batteryPctView.backgroundColor = [UIColor yellowColor];
 		else
 			self.batteryPctView.backgroundColor = [UIColor greenColor];
 	}
 }
-/*
-void updatePositionXConstraintForBatteryLevel(MTPillView *self) {
-	if (self.window == nil || self.hidden) 
-		return;
-	CGFloat batteryLevel = [[UIDevice currentDevice] batteryLevel];
-	
-	if (self.batteryPositionXConstraint == nil) {
-		self.batteryPositionXConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.leadingAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.leadingAnchor multiplier:(1-0.5*batteryLevel) constant:0];
-		self.batteryPositionXConstraint.active = YES;
-		[self addConstraint:self.batteryPositionXConstraint];
-		return;
-	}
-	if (self.batteryPositionXConstraint.active == YES) {
-		self.batteryPositionXConstraint.active = NO;
-		[self removeConstraint:self.batteryPositionXConstraint];
-		self.batteryPositionXConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.leadingAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.leadingAnchor multiplier:(1-0.5*batteryLevel) constant:0];
-		[self addConstraint:self.batteryPositionXConstraint];	
-	}
-}*/
-void updateWidthConstraintForBatteryLevel(MTPillView *self) {
-	//if (self.window == nil || self.hidden) 
-		//return;
 
-	CGFloat batteryLevel = [[UIDevice currentDevice] batteryLevel];
+void updateWidthConstraintForBatteryLevel(MTPillView *self) {
+	if (self.window == nil) 
+		return;
+
+	CGFloat batteryLevel = [[UIDevice currentDevice] batteryLevel] / 100;
 	[self updateColorState];
 	if (self.batteryWidthConstraint == nil) {
-		self.batteryWidthConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.widthAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.widthAnchor multiplier:batteryLevel constant:0];
+		self.batteryWidthConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.widthAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.widthAnchor multiplier:batteryLevel constant:-(offsets*4)];
 		self.batteryWidthConstraint.active = YES;
 		[self addConstraint:self.batteryWidthConstraint];
 		return;
@@ -103,7 +85,7 @@ void updateWidthConstraintForBatteryLevel(MTPillView *self) {
 	if (self.batteryWidthConstraint.active == YES) {
 		self.batteryWidthConstraint.active = NO;
 		[self removeConstraint:self.batteryWidthConstraint];
-		self.batteryWidthConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.widthAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.widthAnchor multiplier:batteryLevel constant:0];
+		self.batteryWidthConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.widthAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.widthAnchor multiplier:batteryLevel constant:-(offsets*4)];
 		[self addConstraint:self.batteryWidthConstraint];	
 	}
 }
@@ -113,11 +95,10 @@ void commonDealloc(MTPillView *self) {
 }
 
 %group Universal
-
 %hook MTStaticColorPillView
 %property (nonatomic, strong) UIView *batteryPctView;
 %property (nonatomic, strong) NSLayoutConstraint *batteryWidthConstraint;
-%property (nonatomic, strong) NSLayoutConstraint *batteryPositionXConstraint;
+
 -(void)setPillColor:(UIColor *)a {
 	%orig(homeBarBackgroundColor);
 }
@@ -174,7 +155,7 @@ void commonDealloc(MTPillView *self) {
 %hook MTLumaDodgePillView
 %property (nonatomic, strong) UIView *batteryPctView;
 %property (nonatomic, strong) NSLayoutConstraint *batteryWidthConstraint;
-%property (nonatomic, strong) NSLayoutConstraint *batteryPositionXConstraint;
+
 -(void)setStyle:(long long)arg1 {
 	%orig(0);
 }
@@ -214,7 +195,7 @@ void commonDealloc(MTPillView *self) {
 %property (nonatomic, strong) UIView *batteryPctView;
 %property (nonatomic, strong) UIView *backgroundView;
 %property (nonatomic, strong) NSLayoutConstraint *batteryWidthConstraint;
-%property (nonatomic, strong) NSLayoutConstraint *batteryPositionXConstraint;
+
 -(id)initWithFrame:(CGRect)arg1 settings:(id)arg2 graphicsQuality:(long long)arg3 {
 	self = %orig;
 	if (self) {
