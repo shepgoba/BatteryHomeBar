@@ -61,9 +61,9 @@ void updateColorState(MTPillView *self) {
 	if ([[NSProcessInfo processInfo] isLowPowerModeEnabled]) {
 		self.batteryPctView.backgroundColor = [UIColor yellowColor];
 	} else {
-		if (batteryLevel <= 20)
+		if (batteryLevel <= 0.20)
 			self.batteryPctView.backgroundColor = [UIColor redColor];
-		else if (batteryLevel >= 21 && batteryLevel <= 35)
+		else if (batteryLevel >= 0.21 && batteryLevel <= 0.35)
 			self.batteryPctView.backgroundColor = [UIColor yellowColor];
 		else
 			self.batteryPctView.backgroundColor = [UIColor greenColor];
@@ -74,8 +74,9 @@ void updateWidthConstraintForBatteryLevel(MTPillView *self) {
 	if (self.window == nil) 
 		return;
 
-	CGFloat batteryLevel = [[UIDevice currentDevice] batteryLevel] / 100;
+	CGFloat batteryLevel = [[UIDevice currentDevice] batteryLevel];
 	[self updateColorState];
+	NSLog(@"batteryLevel: %f", batteryLevel);
 	if (self.batteryWidthConstraint == nil) {
 		self.batteryWidthConstraint = [NSLayoutConstraint constraintWithAnchor:self.batteryPctView.widthAnchor relatedBy:NSLayoutRelationEqual toAnchor:self.widthAnchor multiplier:batteryLevel constant:-(offsets*4)];
 		self.batteryWidthConstraint.active = YES;
