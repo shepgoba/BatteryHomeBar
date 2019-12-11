@@ -8,7 +8,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = BatteryHomeBar
 
-BatteryHomeBar_FILES = BatteryHomeBar.xm
+BatteryHomeBar_FILES = BatteryHomeBar.x
 BatteryHomeBar_LIBRARIES = colorpicker
 BatteryHomeBar_CFLAGS = -fobjc-arc
 
